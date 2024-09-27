@@ -345,11 +345,11 @@ where
 
         while !self.check_status()?.is_calibrated() {
             self.send_initialize()?;
-            defmt::debug!("init: waiting for sensor to report being calibrated, 10ms.");
+            // defmt::debug!("init: waiting for sensor to report being calibrated, 10ms.");
             delay.delay_ms(10_u16);
         }
 
-        defmt::debug!("init: sensor reporting being calibrated, init done.");
+        // defmt::debug!("init: sensor reporting being calibrated, init done.");
         Ok(AHT20Initialized { aht20: self })
     }
 
@@ -365,7 +365,7 @@ where
     ///
     /// This is used by both measure_once and init.
     fn check_status(&mut self) -> Result<SensorStatus, Error<E>> {
-        defmt::debug!("check_status: requesting a status check from sensor.");
+        // defmt::debug!("check_status: requesting a status check from sensor.");
         let mut read_buffer = [0u8; 1];
 
         self.i2c
@@ -381,7 +381,7 @@ where
     /// After sending initialize, there is a required 40ms wait period and verification
     /// that the sensor reports itself calibrated. See the `init` method.
     fn send_initialize(&mut self) -> Result<(), Error<E>> {
-        defmt::debug!("send_initialize: requesting sensor to initialize itself.");
+        // defmt::debug!("send_initialize: requesting sensor to initialize itself.");
         let command: [u8; 3] = [
             // Initialize = 0b1011_1110. Equivalent to 0xBE, Section 5.3, page 8, Table 9
             Command::Initialize as u8,
@@ -470,11 +470,11 @@ where
                 }
                 Err(Error::InvalidCrc) => {
                     // CRC failed to validate, we'll go back and issue another read request.
-                    defmt::error!("Invalid CRC, retrying.");
+                    // defmt::error!("Invalid CRC, retrying.");
                 }
                 Err(Error::UnexpectedBusy) => {
                     // Possibly indicates the previously seen 'ready' was due to uncorrected noise.
-                    defmt::error!("Sensor contradicted a ready status with a crc-checked busy.");
+                    // defmt::error!("Sensor contradicted a ready status with a crc-checked busy.");
                 }
                 Err(other) => return Err(other),
             }
@@ -502,11 +502,11 @@ where
                 }
                 Err(Error::InvalidCrc) => {
                     // CRC failed to validate, we'll go back and issue another read request.
-                    defmt::error!("Invalid CRC, retrying.");
+                    // defmt::error!("Invalid CRC, retrying.");
                 }
                 Err(Error::UnexpectedBusy) => {
                     // Possibly indicates the previously seen 'ready' was due to uncorrected noise.
-                    defmt::error!("Sensor contradicted a ready status with a crc-checked busy.");
+                    // defmt::error!("Sensor contradicted a ready status with a crc-checked busy.");
                 }
                 Err(other) => return Err(other),
             }
@@ -526,7 +526,7 @@ where
 
         // Wait for measurement to be ready
         while !self.aht20.check_status()?.is_ready() {
-            defmt::debug!("measure_once: waiting for ready, 1ms.");
+            // defmt::debug!("measure_once: waiting for ready, 1ms.");
             delay.delay_ms(1_u16);
         }
 
